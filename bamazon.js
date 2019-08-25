@@ -71,9 +71,9 @@ function inventory() {
                     [itemId, productName, departmentName, price, stockQuantity]
                 );
             }
-            console.log("");
+            console.log("================================================================================");
             console.log("-------------------------------Bamazon Inventory -------------------------------");
-            console.log("");
+            console.log("================================================================================");
             console.log(table.toString());
             console.log("");
             continuePrompt();
