@@ -16,7 +16,7 @@ connection.connect(function (err) {
     startPrompt();
 });
 
-//=================================Inquirer introduction===============================
+//=================================Inquirer ===============================
 
 function startPrompt() {
 
@@ -31,7 +31,7 @@ function startPrompt() {
         if (user.confirm === true) {
             inventory();
         } else {
-            console.log("Thank you! Come back soon!");
+            console.log("Thank you! We dont want your Money anyway!");
         }
     });
 }
@@ -40,18 +40,18 @@ function startPrompt() {
 
 function inventory() {
 
-    // instantiate
+
     var table = new Table({
         head: ['ID', 'Product', 'Department', 'Price', 'Stock'],
         colWidths: [5, 15, 20, 10, 8]
     });
 
-    listInventory();
+    currentInventory();
 
-    // table is an Array, so you can `push`, `unshift`, `splice` and friends
-    function listInventory() {
 
-        //Variable creation from DB connection
+    function currentInventory() {
+
+
 
         connection.query("SELECT * FROM products", function (err, res) {
             for (var i = 0; i < res.length; i++) {
@@ -67,11 +67,101 @@ function inventory() {
                 );
             }
             console.log("");
-            console.log("====================================================== Current Bamazon Inventory ======================================================");
+            console.log("-------------------------------Bamazon Inventory -------------------------------");
             console.log("");
             console.log(table.toString());
             console.log("");
+            continuePrompt();
 
         });
     }
+}
+function continuePrompt() {
+
+    inquirer.prompt([{
+
+        type: "confirm",
+        name: "continue",
+        message: "Would you like to make a purchase?",
+        default: true
+
+    }]).then(function (user) {
+        if (user.continue === true) {
+            selectionPrompt();
+        } else {
+            console.log("Thank you! Com again!");
+        }
+    });
+}
+
+function selectionPrompt() {
+    inquirer.prompt([{
+        type: "input",
+        name: "inputID",
+        message: "Enter the ID number you want to purchase!",
+    },
+    {
+        type: "input",
+        name: "inputNumber",
+        message: "How many?",
+
+    }
+    ]).then(function (itemPurchase) {
+
+        connection.query("SELECT * FROM products WHERE id=?", itemPurchase.inputID, function (err, res) {
+            for (var i = 0; i < res.length; i++) {
+
+                if (itemPurchase.inputNumber > res[i].stock_quantity) {
+
+                    console.log("OUT OF STOCK");
+                    startPrompt();
+                }
+                else {
+                    console.log("Item Purchased");
+                    console.log("You've selected:");
+                    console.log("Item: " + res[i].product_name);
+                    console.log("Price: " + res[i].price);
+                    console.log("Quantity: " + itemPurchase.inputNumber);
+                    console.log("Total: " + res[i].price * itemPurchase.inputNumber);
+
+                    var newStock = (res[i].stock_quantity - itemPurchase.inputNumber);
+                    var purchaseID = (itemPurchase.inputID);
+
+                    confirmPrompt(newStock, purchaseID);
+                }
+            }
+        });
+    });
+}
+
+function confirmPrompt(newStock, purchaseID) {
+    inquirer.prompt([{
+        type: "confirm",
+        name: "confirmPurchase",
+        message: "Are you sure?",
+        default: true
+    }]).then(function (userConfirm) {
+        if (userConfirm.confirmPurchase === true) {
+            connection.query("UPDATE products SET ? WHERE ?", [{
+                stockQuantity: newStock
+            },
+            {
+                ID: purchaseID
+
+            }],
+                function (err, res) { });
+            console.log("Order has been shipped!");
+            startPrompt();
+
+
+
+        }
+        else {
+            console.log("Get a Job!");
+            startPrompt();
+        }
+    });
+
+
+
 }
