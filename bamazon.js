@@ -43,7 +43,12 @@ function inventory() {
 
     var table = new Table({
         head: ['ID', 'Product', 'Department', 'Price', 'Stock'],
-        colWidths: [5, 15, 20, 10, 8]
+        colWidths: [5, 15, 20, 10, 8],
+        colAligns: ["center", "left", "left", "right", "right"],
+        style: {
+            head: ["green"],
+            compact: true
+        }
     });
 
     currentInventory();
@@ -143,7 +148,7 @@ function confirmPrompt(newStock, purchaseID) {
     }]).then(function (userConfirm) {
         if (userConfirm.confirmPurchase === true) {
             connection.query("UPDATE products SET ? WHERE ?", [{
-                stockQuantity: newStock
+                stock_quantity: newStock
             },
             {
                 ID: purchaseID
