@@ -43,10 +43,11 @@ function inventory() {
 
     var table = new Table({
         head: ['ID', 'Product', 'Department', 'Price', 'Stock'],
-        colWidths: [5, 15, 20, 10, 8],
+        colWidths: [5, 20, 17, 10, 8],
         colAligns: ["center", "left", "left", "right", "right"],
         style: {
-            head: ["green"],
+            head: ["blue"],
+            background: ["green"],
             compact: true
         }
     });

@@ -39,4 +39,4 @@ INSERT INTO products (product_name, department_name, price, stock_quantity)
 VALUES ('Alpha Bounce', 'shoes', 99.99, 81);
 
 INSERT INTO products (product_name, department_name, price, stock_quantity)
-VALUES ('Yogurt', 'groceries', 2.99, 163);
+VALUES ('Yogurt', 'groceries', 2.99, 163);` q
