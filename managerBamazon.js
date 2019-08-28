@@ -20,11 +20,11 @@ connection.connect(function (err) {
 
 //----------------------------------------Inquirer introduction------------------------------
 
-function startPrompt() {
+var startPrompt = function () {
 
     inquirer.prompt([{
 
-        type: "rawlist",
+        type: "list",
         name: "actionList",
         message: "Welcome Manager. What would you like to review?",
         choices: [
@@ -32,26 +32,38 @@ function startPrompt() {
             "Low Inventory",
             "Add Inventory",
             "Add New Product",
-
         ]
 
 
-    }]).then(function (user) {
-        if (user.actionList === "View Products") {
-            inventroyProducts();
-        } else if (user.actionList === "Low Inventory") {
-            lowInventory();
-        } else if (user.actionList === "Add Inventory") {
-            addInventory();
-        } else {
-            addProduct();
+    }]).then(function (answer) {
+
+        // Different functions called based on managers selection
+        switch (answer.actionList) {
+            case "View Products":
+                inventoryProducts();
+                break;
+
+            case "Low Inventory":
+                lowInventory();
+                break;
+
+            case "Add Inventory":
+                addInventory();
+                break;
+
+            case "Add New Product":
+                addProduct();
+                break;
         }
     });
 }
 
+
+
+
 //------------------------------------View Inventory------------------------------------
 
-function inventroyProducts() {
+function inventoryProducts() {
 
 
     var table = new Table({
@@ -97,7 +109,7 @@ var table = new Table({
     colWidths: [10, 20, 17, 10, 8]
 });
 
-lowInventory();
+
 
 
 function lowInventory() {
@@ -127,7 +139,7 @@ function lowInventory() {
         console.log("");
         startPrompt();
     });
-}
+};
 
 
 //---------------------------------Add Inventor---------------------------------
